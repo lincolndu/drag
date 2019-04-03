@@ -1,0 +1,55 @@
+body {
+        margin:0;
+        padding:0;
+}
+
+#adArea {
+	background: #ffffff;
+    overflow: hidden;
+    text-overflow: clip;
+    cursor:pointer;
+}
+
+.dragEl{
+    position: absolute;
+    width: 70px;
+    height: 70px;
+}
+
+
+#footer1 {
+    top:1px;
+}
+
+
+.rct {
+	width:300px;
+	height:250px;
+    position: absolute;
+}
+
+.opacity0 { opacity: 0; }
+.opacity1 { opacity: 1; }
+
+.zIndex99998 { z-index: 99998; }
+.zIndex99999 { z-index: 99999; }
+
+.hidden{
+	visibility: hidden;
+}
+.noEvents{
+  pointer-events: none;
+}
+.noVis{
+    visibility: none;
+}
+.noDisplay{
+    display: none;
+}
+/*#pumpkin, #cube, #onion{
+    width: 50px !important;
+    height: 50px !important;
+}*/
+#logo,#footer1 {
+    /*z-index: 999999;*/
+}

@@ -1,0 +1,491 @@
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="css/mystyle.css">
+  <script type="text/javascript" src="js/TweenMax.min.js"></script>
+  <script type="text/javascript" src="js/utils/Draggable.min.js"></script>
+</head>
+<body>
+
+  <div id="adArea" class="rct opacity0">
+
+  	<div id="slide_1" class="rct">
+	    <div id="bg1" class=""></div>
+	    
+	    <div id="t1" class=""></div>
+
+	    <div id="pot2" class=""></div>
+
+	    <div id="smoke" class="noEvents opacity0"></div>
+      <div id="light" class="opacity0"></div>
+
+	    <div id="footer1" class="">
+	    	<div id="t2" class=""></div>
+		</div>
+
+	    <div id="dragCont" class="rct">
+		    <div id="pumpkin" class=""></div>
+		    <div id="cube" class=""></div>
+		    <div id="onion" class=""></div>
+		</div>
+
+	    <div id="pot1" class="noEvents zIndex99999"></div>
+	    <div id="logo" class="noEvents"></div>
+  	</div>
+
+  	<div id="slide_2" class="rct opacity0 noEvents">
+	    <div id="bg2" class=""></div>
+	    <div id="footer2" class="">
+		    <div id="t31" class=""></div>
+		    <div id="t32" class=""></div>
+		</div>
+	    <div id="cta" class=""></div>
+	    <div id="product" class=""></div>
+	</div>
+
+  </div>
+
+<script>
+function ctaFunction(url){
+  console.log(url);
+	// window.open("");
+}
+
+  var adArea = document.getElementById("adArea");
+  var w = 300;
+  var h = 250;
+  var totHits = 3;
+
+  var completedNumb = 0;
+  var inactiveDisabled = false;
+  var ftDrag = true;
+  var myDraggable = [];
+  var startX, startY;
+
+  var objects = {
+    adArea: document.getElementById("adArea")
+  };
+
+  function init(){
+    initDrag();
+  	initAnim();
+  }
+
+  function initAnim(){
+  	TweenMax.from(objects.cube, 0.6, {delay: 0.4, y: -60, ease: Back.easeOut, onComplete: function(){
+  		yoyoFloat(objects.cube);
+  	}});
+  	TweenMax.from(objects.pumpkin, 0.6, {delay: 0.5, y: -60, ease: Back.easeOut, onComplete: function(){
+  		yoyoFloat(objects.pumpkin);
+  	}});
+  	TweenMax.from(objects.onion, 0.6, {delay: 0.6, y: -60, ease: Back.easeOut, onComplete: function(){
+  		yoyoFloat(objects.onion);
+  	}});
+
+    TweenMax.from(objects.t1, 0.6, {delay: 0.8, scale: 0, ease: Back.easeOut, transformOrigin: '19% 44%'});
+  	TweenMax.from(objects.light, 0.1, {scale: 0, opacity:0, ease: Back.easeOut, transformOrigin: '19% 44%'});
+
+  }
+
+  function yoyoFloat(el){
+  	TweenMax.to(el, 0.5, {y: 10, yoyo:true, repeat: -1, ease: Power1.easeInOut});
+  }
+
+  function endDragAnim(dest){
+    console.log(objects.light);
+    
+    TweenMax.set(objects.logo, {zIndex:'9999999'});
+    TweenMax.set(objects.footer1, {zIndex:'9999999'});
+    TweenMax.set(objects.smoke, {y: 100, x:70, opacity: 0,width:180, transformOrigin: '65% 100%', backgroundSize:'100% 100%'});
+    TweenMax.set(objects.light, {y: -200, opacity: 0,width:300, transformOrigin: '65% 100%', backgroundSize:'100% 100%'});
+    TweenMax.to(objects.smoke, 1.5, {y: -200, x:50, width:200, opacity: 1, ease: Linear.easeNone, onComplete: function(){
+      TweenMax.to(objects.smoke, 0.01, {zIndex:'9999999'});
+      TweenMax.to(objects.smoke, 2, {y: 0, x:0, width:300, opacity: 1});
+    }});
+
+    TweenMax.to(objects.light, 1.5, {y: -200, opacity: 1, ease: Linear.easeNone, onComplete: function(){
+      TweenMax.set(objects.t1, {opacity:0});
+      TweenMax.to(objects.light, 2, {y: 0,  width:300, zIndex:'999999', opacity: 1});
+    }});
+  }
+
+////////////////// D R A G G A B L E //////////////////////
+
+  function initDrag(){ 
+    var dM = 30;
+    var bounds = { top:0-dM, left:0-dM, width:300+dM*2, height:250+dM*2 };
+    var ff = 0;
+
+    var dragDef = {
+      d1: { x: 73, y: 5 },
+      d2: { x: 152, y: 10 },
+      d3: { x: 241, y: 6 },
+      hit: {
+        enabled: true,
+        hit: { x: -100, y: 75-ff, x2: 300, y2: 250 },
+        endPos: { x: w/2+10, y: h/2+15 },
+        endScale: 0.15
+      }
+  }
+
+    myDraggable.push( addDraggable(objects['cube'], bounds, dragDef.d1, dragDef.hit) );
+    myDraggable.push( addDraggable(objects['pumpkin'], bounds, dragDef.d2, dragDef.hit) );
+    myDraggable.push( addDraggable(objects['onion'], bounds, dragDef.d3, dragDef.hit) );
+  }
+
+  function addDraggable(dragObj, bounds, dragDef, hit){
+  	TweenLite.set(dragObj, { css:{left:dragDef.x, top:dragDef.y, opacity: 1} });
+    return Draggable.create(dragObj, {bounds:bounds, edgeResistance: 0.95, 
+	      onPress:function() { 
+	        onPress(this);
+	      },
+	      onDrag: function(e) {
+	        onDrag(this, hit, dragDef.size);
+	      },
+        onDragEnd:function(e){
+          onDragEnd(this, hit)
+        },
+        onRelease:function(e){
+          onRelease(this)
+        }
+	    })
+  }
+
+var dragFt = false;
+var stopToggle = false;
+  function onPress(el){
+    if(!dragFt){
+      dragFt = true;
+    }
+    startX = getCssProperty(el.target.id, "left");
+    startY = getCssProperty(el.target.id, "top");
+
+    TweenMax.to(el.target, 0.3, {scale: 1.3, ease: Power2.easeOut});
+  }
+
+  var disableOnDrag = false;
+  function onDrag(el, hit, size){
+    var curX = startX + el.x;
+    var curY = startY + el.y;
+
+    // console.log(curX, curY, hit);
+      if(hit.enabled){
+        if((!disableOnDrag) && 
+            ((curX > hit.hit.x) && 
+            (curX < (hit.hit.x2)) && 
+            (curY > hit.hit.y) && 
+            (curY < hit.hit.y2)))
+        {
+          console.log('hit');
+
+          disableOnDrag = true;
+          dropProduct(el, curX, curY, hit.endPos, hit.midEndPos, hit.rot, hit.endScale, size);
+          el.disable();
+
+          if(!inactiveDisabled){
+          	// do smthing
+          }
+        }
+      }
+
+  }
+
+
+  function onDragEnd(el, hit){
+    var curX = startX + el.x;
+    var curY = startY + el.y;
+
+
+    if ((curX > hit.x) && (curX < (hit.x2)) && (curY > hit.y) && (curY < (hit.y2))){
+      el.kill();
+    } else if (!disableOnDrag){
+      var zChanged = false;
+
+      TweenLite.to(el.target, 0.5, {x: 0 +"px", y: 0 +"px", rotation: 0, ease: Power3.easeOut,
+  		  onUpdate: function(){
+  		  }
+  	  });
+    }
+  }
+
+  function onRelease(el){
+    if(!inactiveDisabled){
+    	TweenMax.to(el.target, 0.3, {scale: 1, ease: Power2.easeOut});
+    }
+  }
+
+
+  function dropProduct(el, curX, curY, endPos, midEndPos, rot, endScale, size){
+  	var a = getTransformValue(el.target, "translate3d");
+  	var b = a.split(", ");
+  	var c = parseInt(b[0]);
+  	var d = parseInt(b[1]);
+
+    var endX = endPos.x - curX + c;
+    var endY = endPos.y - curY + d; 
+
+
+    if(endScale == null){
+      endScale = 0.5;
+    }
+    console.log(curX);
+    if (( curX > 130) && ( curX < 230)){
+	  	TweenLite.to(el.target, 0.4, {x: endX, y: endY, rotation:rot, scale: 0.5, ease: Power1.easeOut, onComplete: function(){
+	    		endStarting();
+	    	}
+	  	});
+    } else {
+	  	TweenLite.to(el.target, 0.2, {x: (c+endX)/2, y: 55, scale: 1, ease: Linear.easeNone,
+	    	onComplete: function(){
+		  	TweenLite.to(el.target, 0.3, {x: endX, y: endY, rotation:rot, scale: 0.5, ease: Power1.easeOut, onComplete: function(){
+		    		endStarting();
+		    	}
+		  	});
+		  }
+		});
+    }
+
+  }
+
+  function endStarting(){
+  	disableOnDrag = false;
+  	completedNumb++;
+    if(completedNumb == totHits){
+      setTimeout(endDragAnim, 1000);
+    }
+  }
+
+////////////////// F U N C T I O N S //////////////////////
+///////////////////////////
+
+  function activateButtons(){
+    adArea.addEventListener("click", ctaFunction);
+  }
+
+  function removeButtons(){
+  	adArea.removeEventListener("click", ctaFunction);
+  }
+
+/////////////////////////////
+
+  /* functions */
+  function shadowOpac(curX, curY, id){
+  	if (shadowTweenActive){
+  		shadowTl.kill();
+  		shadowTweenActive = false;
+  	}
+
+  	var distX = curX - startX;
+    var distY = curY - startY;
+    var dist = pitagor(distX, distY);
+    var shadowVal = easeInCubic(1 - dist/50); 
+    if (shadowVal < 0){ shadowVal = 0 }
+
+    var el = getShadowId(id);
+  		// console.log(id);
+    
+  	if ((el != null) && (el.style.opacity != shadowVal)){
+  		el.style.opacity = shadowVal;
+  		// objects['arrows'].style.opacity = shadowVal;
+  	}
+  }
+
+  var shadowTl;
+  var shadowTweenActive = false;
+  function resetShadow(el){
+    var el = getShadowId(el.target.id);
+    if(el != null){
+      shadowTweenActive = true;
+
+      // TweenLite.to(objects['arrows'], 0.6, {delay: 0.1, opacity: 1, ease: Power3.easeOut});
+      shadowTl = TweenLite.to(el, 0.6, {delay: 0.1, opacity: 1, ease: Power3.easeOut, 
+        onComplete: function(){
+          shadowTweenActive = false;
+        }
+      });
+    }
+  }
+
+  function getShadowId(id){
+    var el;
+    switch(id){
+    	case 'drag_bag':
+    		el = emptyDom;
+    		break;
+    	case 'ball1_anim':
+    		el = objects['ball_shadow'];
+    		break;
+    	case 'drag_vr':
+    		el = emptyDom;
+    		break;
+    }
+    return el;
+  }
+
+  function getCssProperty(elmId, property){
+     var elem = document.getElementById(elmId);
+     return parseInt( window.getComputedStyle(elem,null).getPropertyValue(property) );
+  }
+
+  function getTransformValue(element, property){       
+      var values = element.style.transform.split(")");
+      for (var key in values){
+          var val = values[key];              
+          var prop = val.split("(");          
+          if (prop[0].trim() == property)
+              return prop[1];
+      }                   
+      return false;           
+  }
+
+  function pitagor(a, b){ return Math.pow( ( Math.pow( a , 2) + Math.pow( b , 2 ) ) , 0.5) }
+  function easeInCubic(t) { return t*t*t }
+
+window.requestAnimFrame = (function(){
+  return  window.requestAnimationFrame       || 
+          window.webkitRequestAnimationFrame || 
+          window.mozRequestAnimationFrame    || 
+          window.oRequestAnimationFrame      || 
+          window.msRequestAnimationFrame     || 
+          function(/* function */ callback, /* DOMElement */ element){
+              window.setTimeout(callback, 1000 / 60);
+          };
+})();
+
+
+// L O A D    I M A G E S
+    
+var assets_url = "images/";
+
+var assets = {
+    init: [
+   		{
+   			format: "jpg",
+   			type: "id",
+   			names: "bg1"
+   		},
+   		{
+   			format: "png",
+   			type: "id",
+   			names: "cube onion pumpkin"
+   		},
+   		{
+   			format: "png",
+   			type: "id",
+   			names: "footer1 logo pot1 pot2 t1 light"
+   		},
+   		{
+   			format: "png",
+   			type: "class",
+   			names: "smoke"
+   		}
+   	],
+    end: [
+   		{
+   			format: "jpg",
+   			type: "id",
+   			names: "bg2"
+   		},
+   		{
+   			format: "png",
+   			type: "id",
+   			names: "cta footer2 t31 t32 product"
+   		}
+   	]
+}
+
+var assetsCur = 0;
+var assetsTotal = 0;
+var allLoaded = false;
+
+//
+
+function initLoad(){
+    loadAsset(assets.init);
+}
+
+function loadOther(){
+    assetsTotal =  Object.size(assets);
+    for (var prop in assets) {
+    	if(prop != "init"){
+    		loadAsset(assets[prop]);
+    	}
+    }
+}
+
+function loadAsset(a){
+    a.cur_asset_pack = 0;
+    a.asset_packs = a.length;
+    // console.log(a.asset_packs);
+
+	for(var o=0; o<a.asset_packs; o++){
+	    var names = a[o].names.split(" ");
+	    a[o].curLoad = 0;
+      // console.log(names);
+
+	    for (var i=0; i<names.length; i++){
+	        var img = new Image();
+	        img.myCustomData = {total: names.length, a:a, name:names[i], numb: o};
+	        img.onload = function() {
+	            objects[this.myCustomData.name] = document.getElementById(this.myCustomData.name);
+	            objects[this.myCustomData.name].style.backgroundImage = "url(" + this.src + ")";
+	            objects[this.myCustomData.name].style.position = "absolute";
+	            objects[this.myCustomData.name].style.width = this.width + "px";
+	            objects[this.myCustomData.name].style.height = this.height + "px";
+
+	            countAsset( this.myCustomData.a, this.myCustomData.numb, this.myCustomData.total );
+	        };
+	        img.src = assets_url + names[i] + "." + a[o].format;
+	    }
+	}
+}
+
+function countAsset(asset, o, total){
+	asset[o].curLoad++;
+	if(asset[o].curLoad == total) {
+		asset.cur_asset_pack++;
+		if(asset.cur_asset_pack == asset.asset_packs){
+			assetSetLoaded();
+		}
+	}
+}
+
+function assetSetLoaded(){
+    // console.log("assetSetLoaded");
+    assetsCur++;
+    if(assetsCur == 1){
+    	// adArea.style.opacity = 1;
+    	TweenMax.to(adArea, 0.3, {delay: 0.05, opacity: 1});
+    	init();
+    	loadOther();
+    } else if(assetsCur == assetsTotal) {
+    	allLoaded = true;
+    }
+}
+
+//
+
+Object.size = function(obj) { // get objects ammount in var
+    var size = 0, key;
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)) size++;
+    }
+    return size;
+};
+
+
+if (window.addEventListener) {
+    window.addEventListener('load', initLoad(), false);
+} else if (window.attachEvent) {
+    window.attachEvent('onload', initLoad());
+}
+
+
+
+</script>
+
+</body>
+</html>
