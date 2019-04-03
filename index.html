@@ -100,7 +100,7 @@ function ctaFunction(url){
     TweenMax.set(objects.logo, {zIndex:'9999999'});
     TweenMax.set(objects.footer1, {zIndex:'9999999'});
     TweenMax.set(objects.smoke, {y: 100, x:70, opacity: 0,width:180, transformOrigin: '65% 100%', backgroundSize:'100% 100%'});
-    TweenMax.set(objects.light, {y: -200, opacity: 0,width:300, transformOrigin: '65% 100%', backgroundSize:'100% 100%'});
+    TweenMax.set(objects.light, {y: -250, opacity: 0,width:300, transformOrigin: '65% 100%', backgroundSize:'100% 100%'});
     TweenMax.to(objects.smoke, 1.5, {y: -200, x:50, width:200, opacity: 1, ease: Linear.easeNone, onComplete: function(){
       TweenMax.to(objects.smoke, 0.01, {zIndex:'9999999'});
       TweenMax.to(objects.smoke, 2, {y: 0, x:0, width:300, opacity: 1});
